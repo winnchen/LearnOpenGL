@@ -70,7 +70,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 int main()
 {
-    char * dir = getcwd(NULL, 0); // Platform-dependent, see reference link below    
+    char * dir = getcwd(NULL, 0);  
     printf("Current dir: %s\n", dir);
     
     glfwInit();
