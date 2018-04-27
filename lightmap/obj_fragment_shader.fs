@@ -25,6 +25,7 @@ out vec4 color;
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
+uniform float time;
 
 void main()
 {
@@ -44,6 +45,11 @@ void main()
     vec3 specular = light.specular * spec * (vec3(texture(material.specular, TexCoords)));
 
     //emission
-    vec3 emission = vec3(texture(material.emission, TexCoords));
+    vec3 emission = vec3(0.0);
+    if (texture(material.specular, TexCoords).r == 0.0) {
+        emission = vec3(texture(material.emission, TexCoords + vec2(0.0, time)).rgb);
+        emission *= (sin(time) / 2.0 + 0.5) ;
+    }
+    
     color = vec4(ambient + diffuse + specular + emission, 1.0);
 }
