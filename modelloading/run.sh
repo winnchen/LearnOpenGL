@@ -1,0 +1,2 @@
+clang++ -std=c++11 -stdlib=libc++ -lglfw3 -lassimp -framework CoreVideo -framework OpenGL -framework IOKit -framework Cocoa -framework Carbon main.cpp mesh.cpp model.cpp ../Shader.cpp ../glad.c -o modelloading.out
+./modelloading.out
