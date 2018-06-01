@@ -106,7 +106,7 @@ unsigned int load_texture(const char* path)
 
 int main()
 {
-    char * dir = getcwd(NULL, 0);    
+    char * dir = getcwd(NULL, 0);  
     printf("Current dir: %s\n", dir);
     
     glfwInit();
@@ -141,74 +141,90 @@ int main()
     
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+
 
     std::stringstream objVertexShader, objFragmentShader;
     objVertexShader << dir << "/" << "obj_vertex_shader.vs";
     objFragmentShader << dir << "/" << "obj_fragment_shader.fs";
     Shader objShader(objVertexShader.str().c_str(), objFragmentShader.str().c_str());
 
-    std::stringstream lampVertexShader, lampFragmentShader;
-    lampVertexShader << dir << "/" << "lamp_vertex_shader.vs";
-    lampFragmentShader << dir << "/" << "lamp_fragment_shader.fs";
-    Shader lampShader(lampVertexShader.str().c_str(), lampFragmentShader.str().c_str());
-    
     float vertices[] = {
-        // positions          // normals           // texture coords
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+        // positions          // texture Coords
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     glm::vec3 cubePositions[] = {
-        glm::vec3( -4.0f,  1.0f,  0.0f), 
-        glm::vec3( -2.0f,  1.0f,  0.0f), 
-        glm::vec3(  0.0f,  1.0f,  0.0f),   
-        glm::vec3(  2.0f,  1.0f,  0.0f), 
-        glm::vec3(  4.0f,  1.0f,  0.0f), 
-        glm::vec3( -4.0f,  -1.0f,  0.0f), 
-        glm::vec3( -2.0f,  -1.0f,  0.0f), 
-        glm::vec3(  0.0f,  -1.0f,  0.0f), 
-        glm::vec3(  2.0f,  -1.0f,  0.0f), 
-        glm::vec3(  4.0f,  -1.0f,  0.0f)
+        glm::vec3( -2.0f,  0.0f,  0.0f), 
+        glm::vec3(  0.0f,  0.0f,  0.0f), 
+        glm::vec3(  2.0f,  0.0f,  0.0f),  
     };
+
+    float grassVertices[] = {
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+    };
+
+
+    glm::vec3 grassPosition[] = {
+        glm::vec3( -2.5f,  0.2f,  0.6f), 
+        glm::vec3(  0.0f,  0.0f,  0.51f), 
+        glm::vec3(  2.5f,  0.2f, -1.0f) 
+    };
+
+    glm::vec3 windowPosition[] = {
+        glm::vec3(  0.25f,  2.5f, -1.0f), 
+        glm::vec3(  0.0f,  2.0f,  0.51f), 
+        glm::vec3( -0.25f,  1.8f,  0.6f)
+        
+    };
+
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -218,26 +234,39 @@ int main()
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
 
 
-    std::stringstream ssDiffuse;
-    ssDiffuse << dir << "/diffuse_map.png";
-    int diffuseMap = load_texture(ssDiffuse.str().c_str());
+    unsigned int grassVBO, grassVAO;
+    glGenVertexArrays(1, &grassVAO);
+    glGenBuffers(1, &grassVBO);
 
-    std::stringstream ssSpecular;
-    ssSpecular << dir << "/specular_map.png";
-    int specularMap = load_texture(ssSpecular.str().c_str());
+    glBindVertexArray(grassVAO);
 
-    std::stringstream ssEmission;
-    ssEmission << dir << "/emission_map.jpg";
-    int emissionMap = load_texture(ssEmission.str().c_str());
+    glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), grassVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+
+    std::stringstream ssMarble;
+    ssMarble << dir << "/marble.jpg";
+    int MarbleMap = load_texture(ssMarble.str().c_str());
+
+    std::stringstream ssGrass;
+    ssGrass << dir << "/grass.png";
+    int GrassMap = load_texture(ssGrass.str().c_str());
     
+    std::stringstream ssWindow;
+    ssWindow << dir << "/window.png";
+    int WindowMap = load_texture(ssWindow.str().c_str());
+
     while(!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -249,7 +278,7 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;  
 
-        float radius = 0.6f;
+        float radius = 1.0f;
         
 
         glm::mat4 model;
@@ -259,59 +288,44 @@ int main()
         glm::vec3 lightPos = glm::vec3(sin(glfwGetTime()) * radius, 0.1f, cos(glfwGetTime()) * radius);
         glm::vec3 lightColor =  glm::vec3(1.0f, 1.0f, 1.0f);// glm::vec3(sin(currentFrame) * 2.0f, sin(currentFrame) * 0.3f, sin(currentFrame) * 1.7f);  
 
-        
-
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             objShader.use();
-            objShader.setFloat("time",  currentFrame);
             model = glm::mat4();
             model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, glm::radians(30.0f * i), glm::vec3(0.0f, 1.0f, 1.0f));
-            model = glm::scale(model, glm::vec3(0.5f));
             
             objShader.setMat4("model", model);
             objShader.setMat4("view", view);
             objShader.setMat4("projection", projection);
-            
-            objShader.setVec3("viewPos", camera.Position);
-
-            objShader.setInt("material.diffuse", 0);
-            objShader.setInt("material.specular", 1);
-            objShader.setInt("material.emission", 2);
-            objShader.setFloat("material.shininess", 64.f);
-
-            
-            objShader.setVec3("light.position", cubePositions[i] + lightPos);
-            objShader.setVec3("light.ambient", lightColor * glm::vec3(1.0f));
-            objShader.setVec3("light.diffuse", lightColor * glm::vec3(0.5f));
-            objShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, diffuseMap);
-
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, specularMap);
-
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, emissionMap);
+            glBindTexture(GL_TEXTURE_2D, MarbleMap);
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
-            lampShader.use();
+        for (int i = 0; i < 3; i++) {
             model = glm::mat4();
-            model = glm::translate(model, cubePositions[i]);
-            model = glm::translate(model, lightPos);
-            model = glm::scale(model, glm::vec3(0.2f));
+            model = glm::translate(model, grassPosition[i]);
+            objShader.setMat4("model", model);
 
-            lampShader.setMat4("model", model);
-            lampShader.setMat4("view", view);
-            lampShader.setMat4("projection", projection);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, GrassMap);
 
-            lampShader.setVec3("lightColor", lightColor);
+            glBindVertexArray(grassVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
 
-            glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (int i = 0; i < 3; i++) {
+            model = glm::mat4();
+            model = glm::translate(model, windowPosition[i]);
+            objShader.setMat4("model", model);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, WindowMap);
+
+            glBindVertexArray(grassVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
         
@@ -322,6 +336,9 @@ int main()
     
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+
+    glDeleteVertexArrays(1, &grassVAO);
+    glDeleteBuffers(1, &grassVBO);
     
     glfwTerminate();
 
